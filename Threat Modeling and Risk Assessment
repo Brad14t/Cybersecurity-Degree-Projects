@@ -1,0 +1,168 @@
+ 
+
+ 
+
+ 
+
+ 
+
+Threat Modeling and Risk Assessment 
+
+ 
+
+Bradley M. Spooner 
+
+Study.com 
+
+Computer Science 331 
+
+Claire Berninger 
+
+January 12, 2026 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+Threat Modeling and Risk Assessment 
+
+SMBI’s recent phishing attack that resulted in over $2 million in remediation costs, was a significant failure that highlighted several critical gaps in SMBI’s security architecture, and operational policies. This report will provide a detailed analysis of the incident. And all associated key vulnerabilities, incorrect configurations that were exploited, present a risk register for prioritizing remediations, and outlines for recommendations aligned with industry standards, for best practice in fortifying our security posture. The root findings of this breach wasn't a result of a “zero day” sophisticated attack; but rather the exploitation of an employee not properly trained on phishing emails. Then the attacker took advantage of SMBI’s identity management and cloud configuration weaknesses.  
+
+The attack was a multi stage sequence, initially beginning with an email being sent to an employee. The attack started with the email bypassing the “perimeter defense”. Initial compromise was an SMBI employee connected to the corp network via Wi-Fi. Employee opened a phishing email containing known malicious domains. Our email gateway failed ot block or contain the email contents. The email gateway had not been updated with the latest AV signatures. Due to budgetary constraints it’s hard to have a security personnel constantly updating the known malicious signatures for email gateway. Attacker took advantage of the slow patching. Once the email was able to make it to the employee, they clicked the link, which took them to a fake AWS login page. The attacker took advantage of SMBI’s lack of phishing resistant multi factor authentication. Then successfully harvested the valid IAM credentials from user. Using the stolen valid credentials, attacker was able to login to the AWS Management Consol from an external IP address. Then they were able to move laterally to the internal trust boundary, because the security group configuration was set to “Allow All” internal traffic. With this overly permissive rule, it allowed the attacker access to the private subnet. Which contained all the critical information (S3 storage and RDS database). Attacker then used the “s3 sync” command to exfiltrate the vast amount of customer data, to their own external AWS account, before deleting the original copies, and leaving their own KMS encryption key to hold the data for ransom. The attacker also used a method of “SnapShot Shifting” to take a snapshot of RDS Database data, and change permissions to “Shared”. Allowing them to access the data on their external AWS account. 
+
+The key most important vulnerabilities exploited in this case are human error, network, and cloud. Human error was the fundamental issue, an employee unknowingly clicks a malicious link. This stems from a lack of scenario based security awareness training. All employee’s should have the fundamental understanding of what to look out for, when looking at potential phishing emails. Future training is mandatory for future role based access controls. According to NIST (2022) “Organizations determine the content of training based on the assigned roles and responsibilities of individuals as well as the security and privacy requirements of organizations and the systems to which personnel have authorized access, including technical training specifically tailored for assigned duties. Roles that may require role-based training include senior leaders or management officials” (Paragraph 1). Network architecture lacked segmentation. For this case a “flat Wi-Fi" network meant a single compromised PC immediately became a spearhead for an accelerated attack. The most important and critical failure was in AWS Identity and Access Management configurations. The absence of mandatory phishing resistant MFA allowed the access for the attacker. Furthermore, the long lived API keys allowed for the prolonged attacker persistence access, instead of temporary IAM roles. Misconfiguration of S3 buckets, lacking object lock or versioning enabled the permanent deletion of the data. They were able to move laterally across the internal trust boundary because the security groups were overly permissive, giving them access to private subnets containing critical customer data (S3 buckets and RDS Database). This breach poses existential threat to SMBI, beyond the immediate financial cost, the company now faces significant legal and regulatory scrutiny regarding data privacy. This loss of data will severely damage customer relations and customer trust. Which is the most important factor when hosting a cloud storage provider. 
+
+ 
+
+Asset 
+
+Threat/ Vulnerability 
+
+Likelihood 
+
+Impact 
+
+Recommended Safegaurd / Control 
+
+User Identities (IAM) 
+
+Credential Theft: Lack of user MFA on AWS Management Console and email. 
+
+High 
+
+High 
+
+Enforce mandatory MFA (FIDO2) for all employees and user accounts. 
+
+S3 Storage Buckets 
+
+Data loss/ Ransom: Phishing email delivered malware, gained write/ delete permissions to customer data via stolen IAM creds. 
+
+Medium 
+
+High 
+
+Enable S3 Object lock and Cross region replication, to prevent unauthorized deletion and to have a clean backup of data to reference/ restore. 
+
+Email Gateway 
+
+Malware infiltration: Insufficient endpoint detection, to catch more malware and virus’s. 
+
+High 
+
+High 
+
+Deploy EDR solution to block malicious processes in real time.  
+
+Corporate Wireless Network 
+
+Lateral Movement: flat network architecture led to malware spread to internal servers. 
+
+High 
+
+Medium 
+
+Implement network micro segmentation and improve VLAN isolation for wireless user’s.  
+
+AWS API Keys 
+
+Hardcoded Credentials: Admin/ developer storing long lived AWS keys in plain txt or on local machines. 
+
+Medium 
+
+High 
+
+Transition into taking advantage of the security that comes with IAM roles for EC2. And use AWS Secrets manager for key rotartions. 
+
+Corporate Email 
+
+Outdated Threat Signatures: Failure to maintain updated AV/ IPS signatures. 
+
+High 
+
+Medium 
+
+Deploy an Advanced Threat Protection (ATP) filter that performs automated link sandboxing and attachment inspecting. 
+
+Cloud Backups 
+
+Insecure Backup Config: Lack of backups, allowing virus to delete the original data and any copies. 
+
+Low 
+
+High 
+
+Take advantage of AWS Backup and use locked vault policy to ensure backups cant be deleted. 
+
+ 
+
+The most critical risks were the credential theft and the S3 data loss. These issues must be address immediately because they represent a failure of customer data privacy. The core issue to our current security posture, we rely heavily on the initial entry defense, but didn't have a way to stop the attack after they had access. Making it so a single layer failed, resulting in the following layers failing as well. Risks with the impact of high likelihood need to mitigated with strong controls, like hardware based MFA to break the attack chain of initial access. To move forward SMBI must align its security posture with known frameworks like NIST CSF 2.0 and ISO 27001. Immediate phishing resistant MFA needs to be enabled for email access. And the following services need to use temporary credentials via IAM roles. All IAM policies and S3 bucket configs need to be changed to least privilege configuration, eliminating overly permissive objects. Implement write once, read many (WORM) backups in an isolated AWS Backup Vault. Testing will need to be done to ensure the restoration process recovers correctly incase of another exposure. Enchaining logging will also help immensely identifying critical events. Deploy Amazon GuardDuty to detect unusual access or lateral movement. These foundational improvements will shift SMBI’s security posture to a proactive and resilient organization, able to manage risk at a higher more efficient manner. After all this countermeasures are in place, the team needs to move onto learning from their mistakes. Starting a new standard way of doing security, and a streamlined way of incident response in the future. Amazon provides clear documentation on how to learn and improve after a breach. The final outcome of this meeting, according to Amazon should (2024) “Implementing a lessons learned framework and root cause analysis capability can not only help improve incident response capabilities, but also help prevent the incident from recurring. By learning from each incident, you can help avoid repeating the same mistakes, exposures, or misconfigurations, not only improving your security posture, but also minimizing time lost to preventable situations.” (paragraph 1). With this as a foundation, the company has a great baseline to continue on, to learn, improve, and hopefully stop a similar situation from happening again. 
+
+The comprehensive cost of this breach extends beyond simple restore and move on. The cost of this incident is across three primary categories. Incident response and technical recovery, operational downtime and revenue loss, and legal/ compliance. I estimate ~$1.1 million which is the largest portion, is due to the incident response & technical recovery. A third part forensic analysis is mandatory for this situation, CrowdStrike is a great company for that. This is needed to determine the exact extent of the infiltration, and root cause. Next part would be to rebuild and re-architect the compromised AWS environment, re image user workstations, and a significant chuck for egress fees charged by the mass export by the attacker. SMBI experienced nearly five days of operational downtime, due to system containment and cleaning. This portion is estimated to be ~$650,00, which includes lost revenue, productivity losses, and miscellaneous charges due to digital platform being down. Legal counsel fees are estimated ~$250,00, covering global privacy acts and potential fines. 
+	SMBI operates internationally, making strict global data privacy regulations mandatory. This failure to uphold basic security safeguards like MFA, demonstrates a lack reasonable security procedures. SMBI will face penalties for EU citizens. GDPR emphasizes integrity and confidentiality. SMBI might face a significant fine, due to the failure to patch known vulnerabilities and enforce MFA. According to GDPR (2013), “Infringements of the following provisions shall, in accordance with paragraph 2, be subject to administrative fines up to 10 000 000 EUR, or in the case of an undertaking, up to 2 % of the total worldwide annual turnover of the preceding financial year, whichever is higher:” (Art 83) 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+References 
+
+NIST (2022). Cybersecurity and Privacy Reference Tool | CSRC. Nist.gov. https://csrc.nist.gov/projects/cprt/catalog#/cprt/framework/version/SP_800_53_5_2_0/home?element=AT-03 
+
+ 
+
+GDPR. (2013). Art. 83 GDPR – General conditions for imposing administrative fines | General Data Protection Regulation (GDPR). General Data Protection Regulation (GDPR). https://gdpr-info.eu/art-83-gdpr/ 
+
+ 
+
+AWS. (2024, November 6). Security Pillar - AWS Well-Architected Framework - Security Pillar. Docs.aws.amazon.com. https://docs.aws.amazon.com/wellarchitected/latest/security-pillar/welcome.html 
+
+‌ 
+
+ 
+
+ 
+
+ 
+
+‌ 
+
+ 
