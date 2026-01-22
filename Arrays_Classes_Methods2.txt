@@ -1,0 +1,186 @@
+/* This program will be using object oriented principles to create classes and methods.
+ * Creating a rectangle class to calculate the area bases on user provided dimensions.
+ * Including input validation to handle possible I/O errors.
+ * Then the program is extended to include cylinder, cube , and sphere. 
+ * Also including area calculations for each shape.
+ */
+
+package arraysclassesmethods; // Folder address.
+
+import java.util.Scanner; // Import Scanner class for keyboard input.
+
+/**
+ * Geometric calculation program that utilizes Object-Orieted principles.
+ * The program calculates the area of rectangles, and the volume of
+ * spheres, cylinder, and cubes based on user provided input.
+ * 
+ * @author - Bradley Spooner
+ * @version - 2025.12.28
+ */
+
+public class Arraysclassesmethods { // Name of Program.
+
+	public static void main(String[] args) { // Main Method.
+		Scanner input = new Scanner(System.in); // Create Scanner object.
+		
+		// Boolean variable to keep the loop running until user chooses to exit
+		boolean keepRunning = true;
+		
+		/**
+		 * loop logic information 
+		 * <a href="https://study.com/academy/lesson/while-loops-in-java-example-syntax.html">While loop information</a>.
+		 */
+
+		while (keepRunning) {
+			// Output menu for shape choice 
+			System.out.println("\n--- Choose Shape ---");
+			System.out.println("1. Rectangle (Area)");
+			System.out.println("2. Sphere (Volume)");
+			System.out.println("3. Cylinder (Volume)");
+			System.out.println("4. Cube (Volume)");
+			System.out.println("5. Exit Program");
+			System.out.print("Please enter your choice (1-5): ");
+			
+			// Validates input for shape selection
+			while (!input.hasNextInt()) {
+				System.out.println("Error: Please enter a menu number (1-5).");
+				// Below clears the bad input
+				input.next(); 
+			}
+			// Reads integer chosen by user, storing it in choice.
+			int choice = input.nextInt();
+
+			/* Switch statement used to branch to different logic patterns, each case assigned to a shape.
+			 * No need for public or private double, due to them being local variables.
+			 * Calls helper method of getValidDouble, pausing program waiting for a number, then storing with local variable. 
+			 * Helps by limiting while loops.
+			 */
+			
+			/**
+			 * switch information
+			 * <a href="https://study.com/academy/lesson/practical-application-for-java-using-switch-statements.html">Switch Statements</a>.
+			 */
+			switch (choice) {
+				case 1: // Rectangle calculations
+					System.out.print("Enter length: "); // Ask for user input of length.
+					double l = getValidDouble(input); // Uses helper method.
+					System.out.print("Enter width: "); // Ask for user input of width.
+					double w = getValidDouble(input); // Store another value, to new variable.
+					Rectangle rect = new Rectangle(l, w); // Store provided values to rect variable 
+					
+					/* Output rounded to 2 decimals (%2f\n), then to a new line (\n).
+					 * Variable rect uses method below in "class Rectangle" to perform calculations 
+					 */
+					
+					System.out.printf("Rectangle Area: %.2f\n", rect.calculateArea()); 
+					break; // Break out of code to output result
+
+				case 2: // Sphere calculations
+					System.out.print("Enter radius: "); // Ask for radius input
+					double rSphere = getValidDouble(input); // Uses helper method
+					Sphere sphere = new Sphere(rSphere); // Store value in new variable.
+					System.out.printf("Sphere Volume: %.2f\n", sphere.calculateVolume()); // Same output format as above, using alternate method to calculate.
+					break; // Break out of code to output result
+
+				case 3: // Cylinder calculations 
+					System.out.print("Enter radius: ");
+					double rCyl = getValidDouble(input);
+					System.out.print("Enter height: ");
+					double hCyl = getValidDouble(input);
+					Cylinder cyl = new Cylinder(rCyl, hCyl);
+					System.out.printf("Cylinder Volume: %.2f\n", cyl.calculateVolume());
+					break;
+
+				case 4: // Cube calculations 
+					System.out.print("Enter side length: ");
+					double side = getValidDouble(input);
+					Cube cube = new Cube(side);
+					System.out.printf("Cube Volume: %.2f\n", cube.calculateVolume());
+					break;
+
+				case 5: // Exit logic
+					System.out.println("Exiting program...");
+					keepRunning = false;
+					break;
+
+				default: // Valid selection
+					System.out.println("Invalid selection. Please choose 1-5.");
+			}
+		}
+
+		input.close(); // Closes program if completed.
+	}
+
+	// Helper method for clean input validation (replaces repeating while loops).
+	
+	/**
+	 * Validates user input to ensure a double is entered.
+	 * Prevents program crashes by clearing invalid buffer data.
+	 * @param sc The scanner object used to read console input.
+	 * @return A validated double value from user.
+	 */
+	
+	public static double getValidDouble(Scanner sc) { // New scanner parameter.
+		while (!sc.hasNextDouble()) { // Validating decimal number.
+			System.out.println("Error: Enter a valid number."); // Output error message if not a valid number.
+			sc.next(); // Clears the bad input.
+		}
+		return sc.nextDouble(); // Return valid number
+	}
+}
+
+// Shape Classes
+
+class Rectangle { // Defining Rectangle
+	private double l, w; // Private variables used only with Rectangle class, defining physical properties.
+	
+	/**
+	 * Constructs a new rectangle object.
+	 * @param length The horizontal dimension of rectangle.
+	 * @param width The vertical dimension of the rectangle.
+	 */
+	
+	public Rectangle(double length, double width) { this.l = length; this.w = width; } // Refers to private variables (l, w), passing to length & width.
+	
+	/**
+	 * @return The calculated area (length * width)
+	 */
+	
+	public double calculateArea() { return l * w; } // Sends l & w to main method.
+}
+
+class Sphere { // Defining Sphere.
+	private double r; // Internal storage of radius of sphere.
+	public Sphere(double radius) { this.r = radius; } // This constructor runs when input of new Sphere.
+	
+	/**
+	 * Calculates volume using the formula: (4/3) * PI * r^3.
+	 * @return The volume of the sphere as a double.
+	 */
+	
+	public double calculateVolume() { return (4.0 / 3.0) * Math.PI * Math.pow(r, 3); } // Performs geometric volume formula. Math.PI used for numerical pi from Java.
+}
+
+class Cylinder { // Defining Cylinder.
+	private double r, h; // Internal storage of physical properties.
+	
+	/**
+	 * Constructs a cylinder with a specific radius and height.
+	 * @param radius The distance from the center to the end.
+	 * @param height The vertical length of the cylinder.
+	 */
+	
+	public Cylinder(double radius, double height) { this.r = radius; this.h = height; } // Setup instructions.
+	public double calculateVolume() { return Math.PI * Math.pow(r, 2) * h; } // Performs geometric volume formula.
+}
+
+class Cube { // Defining Cube.
+	private double s; // Internal storage of physical properties.
+	
+	/**
+	 * Constructs a cube where all sides are of equal length.
+	 * @param side The length of one edge of the cube.
+	 */
+	public Cube(double side) { this.s = side; } // Set up instructions.
+	public double calculateVolume() { return Math.pow(s, 3); } // Performs geometric calculations.
+}
