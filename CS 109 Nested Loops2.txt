@@ -1,0 +1,124 @@
+/* Purpose of the program is to identify perfect numbers, between 1 to 200. 
+ * Utilizing nested loops to iterate through a range and calculate the sum of divisors for each number.
+ * Then extending and altering program to accept larger numbers, to prevent an overflow.
+ * Ultimately outputting the perfect numbers below and equal to the user inputed number.
+ * I went through a few iterations of the code because I couldn't get the output of the next perfect number after 8128.
+ * It's because their is too much processing happening, to shorten the code and make it the most efficient possible.
+ * I used Euclid-Euler Theorem, which tells me that every perfect number follows a specific pattern (PerfectNumber = 2^(p-1) * (2^p-1) ... only if (2^P-1) is a prime number (Mersenne Prime))
+ */
+
+// Declaring package name, and address of file.
+package nestedloops;
+// Import Scanner class for keyboard input.
+import java.util.Scanner;
+
+/**
+ * Program Identifies perfect numbers with a range using multiple methods:
+ * 1. Brute force iteration (#'s 1 - 200)
+ * 2. Using Euclid-Euler Theorem for larger inputs, and preventing processing delays and overflows.
+ * Theorem: PerfectNumber = 2^(p-1) * (2^p-1), IF (2^p-1) is a Merseene Prime.
+ * @author - Bradley Spooner
+ * @version - 2025.12.28
+ */
+
+/**
+ * Documentation Comment information
+ * <a href="https://study.com/academy/lesson/comments-in-java-syntax-example.html">Documentation Comments</a>.
+ */
+
+public class Nestedloops {
+	// Program starts execution.
+	public static void main(String[] args) {
+		// Part 1, start output of perfect numbers up to 200.
+		System.out.println("Perfect numbers between 1 and 200: "); // Title 
+		
+		/**
+		 * Nested for loops
+		 * <a href="https://study.com/academy/lesson/nested-for-loops-in-java.html">Nested for loops</a>.
+		 */
+		for(int i = 1; i <= 200; i++) { // Iterates every number up to 200 to see if its perfect.
+			int tester = 0; // Resets sum of divisors for each number = i.
+			for(int j = 1; j < i; j++) { // Nested loop to find divisors of i.
+				if(i % j == 0) { // If j divides i, it's a divisor.
+					tester += j; // Adds divisor to running total.
+				}
+			}
+			if(tester == i ) { // If the sume of all divisors (tester) equals the original number, it's a perfect number.
+				System.out.println(tester + " is a perfect number!"); // Output results.
+			}
+		}
+		
+		System.out.println();
+		
+		// Creating a scanner object named input, to listen to keyboard (System.in).
+		Scanner input = new Scanner(System.in);
+		// Display message to user, where user will put upper limit #.
+		System.out.print("Enter the upper limit to find perfect numbers: ");
+		/* Reads user input, and stores it in variable "userLimit".
+		 * long is used here to accept a larger limit of numbers.
+		 */
+		long userLimit = input.nextLong();
+		// Method call, sending userLimit value to the method (findPerfectNumbersFormula).
+		findPerfectNumbersFormula(userLimit);
+		// Close the scanner as good practice and to avoid resource leak.
+		input.close();	
+	}
+	/* The method below uses the Euclid-Euler Theorem to find perfect numbers instantly.
+	 * "Limit" will be the placeholder name for "userLimit" that was sent from main.
+	 */
+	/**
+	 * Calculates perfect numbers using the Euclid-Euler Theorem.
+	 * Uses a long data type to accept larger limits and overflows.
+	 * @param limit The upper numerical boundary for finding perfect numbers.
+	 */
+	
+	public static void findPerfectNumbersFormula(long limit) {
+		/* Loop through p, to follow the patter 2^(p-1) * (2^p-1).
+		 * p < 31 is the safety limit that keeps the value from exceeding the long data type.
+		 */
+		for (int p = 2; p < 31; p++) {
+			/* Part 1 of theorem, calculating the Mervenne candidate (2^p-1).
+			 * Set the new mervenneCandidate variable to long.
+			 * Math.pow always returns a double, so I cast a (long) to it, forcing it to a whole number.
+			 */
+			long mervenneCandidate = (long) Math.pow(2,  p) - 1;
+			/* Step 2 of theorem, checking if the mervenneCandidate is a prime number.
+			 * If true, the rest of the formula will result in a perfect number
+			 */
+			if (isPrime(mervenneCandidate)) {
+				// Completing the calculation of theorem.
+				long perfectNumber = (long) Math.pow(2,  p - 1) * mervenneCandidate;
+				// Last check, only print if its within the range the user chose, if statement below ensures no math errors or overflow.
+				if (perfectNumber > 0 && perfectNumber <= limit) {
+					// Changed to "printf" to format the long with commas (%,d) for an easier to view output.
+					System.out.printf("%,d is a perfect number!%n", perfectNumber);
+				}
+			}
+		}
+	}
+	/* This method is a helper that determines if number is prime.
+	 * This greatly increases performance, allowing anyone to find higher prime numbers without having to check each individual number.
+	 * Instead it stops at a square root.
+	 */
+	
+	/**
+	 * Determines if a given number is a prime using a square root optimization.
+	 * This is a helper method for identifying Mersenne Prime candidates.
+	 * @param n The number to check if Mersenne Prime.
+	 * @return True if the number is prime.
+	 */
+	
+	public static boolean isPrime(long n) {
+		if (n < 2) return false; // 0 and 1 are not prime, so I can start at 2.
+		if (n == 2) return true; // 2 is the only even prime, so if 2, stop and say yes it's a prime.
+		if (n % 2 == 0) return false; // All other even numbers are not prime, return false.
+		// Check odd numbers up to the square root of n.
+		for (long i = 3; i <= Math.sqrt(n); i += 2) {
+			// If divisible, it's not a prime number.
+			if (n% i == 0) return false;
+		}
+		// If no divisors found, it's a prime number.
+		return true;
+	}
+
+}
