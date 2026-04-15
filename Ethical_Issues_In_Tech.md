@@ -26,6 +26,12 @@ B.  Apply an ethical framework to the issue described by doing the following:
 
 2.  Explain how the response from part B1 would be similar or different when applying another ethical framework from those listed in part B1 to the same ethical issue.
 
+C.  Acknowledge sources, using in-text citations and references, for content that is quoted, paraphrased, or summarized.
+
+ 
+
+D.  Demonstrate professional communication in the content and presentation of your submission.
+
 
 # My essay
 
@@ -107,10 +113,15 @@ better overall outcome for the company and its employees. However, from an exter
 point of view, these actions seem the same. The justifications driving them are
 drastically different.
 
+Reference list:
+Den Adams. (2009, September 22). PAPA Model. YouTube.
+https://www.youtube.com/watch?v=Utd_sn7EYts
+Panopto. (2026). Panopto.
+https://wgu.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=e0cfdca9-39b6-44cfa31c-b1cd00fe6300&start=502.568732
+Panopto. (2026). Panopto.
+https://wgu.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=5b093ab0-2683-4352-
+b23b-b1cd00fe62f5&start=0
+
  
 
-C.  Acknowledge sources, using in-text citations and references, for content that is quoted, paraphrased, or summarized.
 
- 
-
-D.  Demonstrate professional communication in the content and presentation of your submission.
