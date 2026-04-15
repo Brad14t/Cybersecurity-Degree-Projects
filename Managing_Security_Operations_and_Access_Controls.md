@@ -66,6 +66,7 @@ ensures no user holds excessive rights. Separation of duties prevents a single u
 controlling an entire sensitive process end-to-end. Need to know restricts access to
 sensitive data to only those whose role legitimately requires it, reducing the attack surface
 if a single user is compromised.
+
 The first misalignment is with an HR Assistant, P. Ellis. P. Ellis is listed with an end
 date of 2025-05-20 and a role history not of “Terminated (2025-05-20)”, yet the account
 status column shows “Active”. Furthermore, the system logs confirm a successful login by
@@ -77,6 +78,7 @@ organization. Therefore, no permission should be assigned. According to NIST SP 
 Corp’s own Access Control Policy section 8 states that “access should be revoked within
 seven days of the end date.” Leaving this account active creates a significant insider threat
 and unauthorized access risk.
+
 The second misalignment is with a Junior System Admin, J. Lopez. With this role, the
 user would reasonably work with scoped administrative tasks under supervision. However
 the system logs show a privilege escalation at 10:25:11Z on 2025-06-29. “PRIV_ESCALTION
@@ -87,6 +89,7 @@ directly violates RBAC’s least privilege principle and separation of duties. H
 admin doesn’t require domain-level privileges, and a self-service privilege escalation is a
 critical failure. NIST SP 800-53 requires that privileged account assignments be explicitly
 authorized.
+
 The third misalignment is with a Customer Support Rep, J. Hall. They are listed as
 customer support rep, with access to the CRM and email server. Both are appropriate for
 the support role. However, J. Hall is also listed as having access to the payroll system,
@@ -96,6 +99,7 @@ violates the least privilege and need-to-know principles. The Access Control Pol
 states that RBAC roles should align with business functions and defined permission sets,
 and that any expectations must be documented with business justification. None of which
 are present in the matrix.
+
 The fourth misalignment is with an External Auditor, D. Nguyen. They are listed as an
 external contract auditor with a contract end date of 2025-06-15. The account still shows
 “Active” as of the review date. The system logs confirm a successful login on 2025-06-30 at
@@ -106,6 +110,7 @@ role assignment must be revoked. FinSecure Corp’s Access Control Policy, secti
 states that contractor access may be provisioned for the duration of their engagement, and
 section 8 requires that access be revoked within 7 days of the end date. This account was
 active for longer than the required period.
+
 Misalignments 1 and 4 both involve accounts that remain active after their
 respective end dates. FinSecure Corp’s Access Control section 8 already requires
 revocation within 7 days, but the policy is inconsistent. The recommended change is to
@@ -116,6 +121,7 @@ automated solution eliminates human delays and ensures policy compliance, regard
 of whether an HR manager or an IT member remembers to submit a manual deactivation
 ticket. This recommendation aligns with NIST SP 800-53 AC-2, which requires organizations
 to disable accounts when they are no longer needed.
+
 Misalignment 2 involves J. Lopez manually granting himself Domain Admin
 privileges. A self-service process that bypasses approval. The recommended change is to
 enforce a formal privilege access management (PAM) workflow in which privilege
@@ -141,6 +147,7 @@ has been assigned a formal RBAC role name. All changes are documented in the Cha
 Noted column. Red “Account Status” cells mean the account must be disabled
 immediately. Amber “Change Notes” cells were made to align RBAC role definitions and
 the least privilege principle.
+
 View Full Data Table (PDF)
 Gap 1 is that access reviews lack a defined frequency and accountability. Section 3
 of the Access Control Policy states, “department managers are responsible for reviewing
@@ -152,6 +159,7 @@ Cheng had CRM access outside her finance role, neither of which would exist unde
 functioning periodic review process. There is no defined review interval, no escalation path
 if a manager fails to conduct a review, and no audit trail required beyond a vague portal
 documentation note.
+
 Gap 2 is the offboarding process that relies entirely on manual manager action with
 no verification step. Section 8 states that “managers must submit account deactivation
 requests when staff leave the organization.” And that access should be revoked within
@@ -163,6 +171,7 @@ reimaging returned devices. The result is exactly what is shown in the logs: P. 
 terminated on May 20 but successfully logged in on June 29. And D. Nguyen, whose
 contract expired June 15, logged in on June 30. The policy sets a seven-day standard but
 provides no mechanism to enforce it.
+
 Gap 3 is the logging and monitoring policy that allows unrestricted access to system
 logs. Section 9 states that “access to logs shall be unrestricted to aid in troubleshooting.”
 This is a direct security risk. System logs contain sensitive information, including user login
@@ -170,6 +179,7 @@ activity, failed authentication attempts, administrative actions, and potentiall
 compromise. Allowing any user unrestricted access to logs means a malicious insider or
 compromised account could review logs to understand detection capabilities, identify
 what activity is being monitored, and cover their tracks more effectively.
+
 Recommendation for gap 1 is to mandate quarterly access reviews with a defined
 owner and escalation path. The policy should be updated to require access reviews on a
 defined schedule. At a minimum, quarterly for privilege accounts and semiannually for all
@@ -179,6 +189,7 @@ which requires accounts to be reviewed regularly, and ISO/IEC 27001 annex A.9.2.
 mandates periodic review of user access rights at a defined interval. The revised policy
 should define “access review” concretely by comparing each user's actual permissions
 with their current role.
+
 Recommendation for gap 2 is to implement an automated, HR-integrated account
 deactivation workflow with mandatory verification. Section 8 should be updated to require
 that account deactivation be triggered automatically when an employee's end date is
@@ -191,6 +202,7 @@ accounts cannot remain active past the contract end date. This recommendation ap
 to NIST SP 800-53 AC-2, CIS Control 6.2, and ISO/IEC 27001 annex A.9.2.6. The seven-day
 window should be treated as an absolute maximum for edge cases, not an operational
 standard.
+
 Recommendation for gap 3 is to restrict log access to security and IT personnel only,
 with exceptions requiring approval. Section 9 should be revised to state that access to
 system logs is restricted by default to security and IT personnel only. And any other use
@@ -199,6 +211,7 @@ SP 800-53 AU-9, which explicitly requires that audit logs and tools be protected
 unauthorized access, modification, or deletion. The current policy's justification of
 “unrestricted access aids troubleshooting” can be saved by granting read-only access to
 relevant IT staff on a need-to-know basis.
+
 The first weakness of the broader operational process is that change management
 lacks formal documentation and review requirements. The operational practices overview
 states that firewall and critical security device changes are made by IT administration with
@@ -214,11 +227,13 @@ changes made without approval could inadvertently take down critical systems wit
 rollback plan. Integrity is at risk because an insider could modify firewall rules to allow data
 exfiltration, with no paper trail linking the change to the specific actor or business
 justification.
+
 My recommendation would be to introduce a formal change management policy
 requiring that all changes to firewalls and critical security devices be submitted through a
 ticketing system prior to implementation. Including a documented business justification
 and rollback plan. Also needing manager approval, except in actual emergencies, and
 undergo a post-change review within 24 hours of implementation.
+
 The second weakness of the broader operational process is that security awareness
 training is superficial and fails to develop practical skills. The operational practices
 overview states that employees receive a short security awareness email annually, no
@@ -230,6 +245,7 @@ professional. Cannot adequately convey the threat landscape employees face. The 
 logs support this, J. Hall on 2025-06-30 at 08:15:56Z queried the known malicious domain
 xyzmalware.com, suggesting the user either clicked a phishing link or was otherwise
 socially engineered. Phishing simulation training is designed to prevent.
+
 This weakness affects all three pillars of the CIA triad. Confidentiality is at risk
 because a phishing susceptible employee can be manipulated into surrendering
 credentials or sensitive information. Integrity is at risk due to malware delivered via
@@ -237,11 +253,13 @@ phishing or social engineering, as evidenced by the GhostX RAT alert on K. Patel
 Can modify, encrypt, or corrupt organizational data. Availability is at risk because
 ransomware and destructive malware, commonly delivered through phishing, can render
 systems and data inaccessible.
+
 My recommendation is to replace the annual email with a structured, ongoing
 security awareness program that includes role-based training modules, delivered at least
 quarterly. Also, simulated phishing is conducted at regular intervals with immediate
 remedial training for employees who fail. And a formal onboarding security training session
 delivered by the security team.
+
 The third weakness of the broader operational process is that physical security
 controls are inconsistently enforced and unmonitored. The operational practices overview
 identifies three physical security failures: keycards are not always deactivated immediately
@@ -254,11 +272,13 @@ attacker to introduce hardware implants, tamper with configurations, or directly
 systems to bypass software-based access controls. Availability is at risk because
 unauthorized physical access to a server room could result in hardware sabotage, power
 disruptions, or equipment destruction, taking affected systems offline.
+
 My recommendation is to enforce three immediate procedural changes: first,
 establish a mandatory keycard deactivation SLA for lost or stolen cards to be reported and
 deactivated within one hour. With the process designated to facilities staff. Second,
 implement a weekly automated review of server room access logs. Third, enforce a strict
 visitor escort policy with no exceptions.
+
 The first threat identified in the system logs is a brute-force attack, followed by a
 successful login from an unknown geographic location. The logs show the following
 sequence on 2025-06-29:
@@ -285,6 +305,7 @@ mitigation adheres to NIST SP 800-53 AC-7, which requires that organizations enf
 limit on consecutive failed login attempts and lock accounts when that limit is exceeded,
 and CIS Control 6.3, which mandates MFA for all accounts, particularly those with access
 to sensitive systems.
+
 The second threat analyzed in the system logs is malware detection, specifically
 GhostX Remote Access Trojan. The logs show the following on 2025-06-29:
 14:54:08Z – Malware_Alert host=10.1.1.45 user=l.patel malware_family=”GhostX RAT”
@@ -296,6 +317,7 @@ meaning the endpoint detection system has high confidence in the signature match
 makes this threat particularly concerning is the earlier log showing that K. Patel, the
 security analyst, whose machine was infected. Cleared the SIEM alert earlier that same
 day, classifying it as a false positive.
+
 The mitigation strategy should be to isolate host 10.1.1.45 from the network,
 preserve a forensic image of the system before remediation, and initiate an incident
 response process that treats the alert-clearing event as potentially related to the
@@ -316,6 +338,8 @@ misconfiguration that allows external TCP traffic, or the scan is originating fr
 already has some level of network presence. The timing of this scan is also notable. The
 scan occurred the morning after J. Hall’s account was queried against a known malicious
 domain, suggesting this could be part of a coordinated intrusion sequence.
+
+
 The mitigation strategy should include immediately blocking the source IP
 102.54.18.99 at the perimeter firewall and investigating how external TCP traffic reached
 the internal subnet. This subnet should not be reachable from the internet without passing
@@ -327,4 +351,6 @@ aligns with the OCTAVE risk analysis framework, which emphasizes identifying cri
 assets and the paths to them. 
 
 [C845 Assignment 1 (1).pdf](https://github.com/user-attachments/files/26760533/C845.Assignment.1.1.pdf)
+
+[Revised_User_Role_Matrix_Clean (1).pdf](https://github.com/user-attachments/files/26760602/Revised_User_Role_Matrix_Clean.1.pdf)
 
