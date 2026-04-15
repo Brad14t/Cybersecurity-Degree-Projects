@@ -325,3 +325,6 @@ internal subnets. Deploy an intrusion detection and prevention system with autom
 blocking rules that trigger port-scanning patterns rather than logging them. This mitigation
 aligns with the OCTAVE risk analysis framework, which emphasizes identifying critical
 assets and the paths to them. 
+
+[C845 Assignment 1 (1).pdf](https://github.com/user-attachments/files/26760533/C845.Assignment.1.1.pdf)
+
